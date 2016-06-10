@@ -1,19 +1,20 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
- <property>
-  <name>dfs.replication</name>
-  <value>3</value>
-  <description>The actual number of replications can be specified when the file is created.</description>
- </property>
- <property>
-     <name>dfs.permissions</name>
-     <value>false</value>
+  <property>
+    <name>dfs.replication</name>
+    <%- if @hadoop_fully_distributed_mode -%>
+    <value><%= @hadoop_replication %></value>
+    <%- else -%>
+    <value>1</value>
+    <%- end -%>
   </property>
   <property>
-      <name>dfs.support.append</name>
-      <value>true</value>
+    <name>dfs.permissions</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>dfs.support.append</name>
+    <value>true</value>
    </property>
-  
-  
 </configuration>

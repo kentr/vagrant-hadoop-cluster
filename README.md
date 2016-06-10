@@ -1,30 +1,22 @@
 vagrant-hadoop-cluster
 ======================
 
-Deploying hadoop in a virtualized cluster in simple steps
+Deploys hadoop in a virtualized psuedo-cluster.
 
-These are the files that support the blogpost http://cscarioni.blogspot.co.uk/2012/09/setting-up-hadoop-virtual-cluster-with.html
+Modified from https://github.com/calo81/vagrant-hadoop-cluster
 
-For using them.
+## Requirements
 
-Simply clone the repository, then
+* vagrant
 
-`gem install vagrant `
+## Usage
 
-`vagrant box add base-hadoop http://files.vagrantup.com/lucid64.box`
-
-
-Maybe generate your own ssh-keygen pair of keys.. and replace them in the files id_rsa and id_rsa.pub in the modules/hadoop/files directory. Or for testing copy the provided `id_rsa` and `id_rsa.pub` into your `.ssh` directory.
-
+Clone the repo and cd to the directory.
 
 `vagrant up`
 
-then 
-
 `vagrant ssh master`
 
-`cd /opt/hadoop-xxx/bin`
+`/opt/hadoop-xxx/bin/hadoop namenode -format`
 
-`./hadoop namenode -format`
-
-`./start-all`
+`/opt/hadoop-xxx/sbin/start-dfs.sh`

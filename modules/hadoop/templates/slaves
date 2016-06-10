@@ -1,3 +1,7 @@
+<% if @hadoop_fully_distributed_mode -%>
 <%= @hadoop_1 %>
 <%= @hadoop_2 %>
 <%= @hadoop_3 %>
+<% else -%>
+localhost
+<% end -%>

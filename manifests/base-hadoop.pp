@@ -1,17 +1,42 @@
-$install_dir = "/tmp"
-$hadoop_home = "${install_dir}/hadoop"
-$user = "ubuntu"
-$group = "ubuntu"
+Exec { path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/", "/usr/local/bin/" ] }
+
+$install_dir = "/opt"
+$hadoop_version = "2.7.2"
+$hadoop_dir = "hadoop-${$hadoop_version}"
+$hadoop_home = "${install_dir}/${$hadoop_dir}"
+
+# Change the Hadoop tmp directory so that persists between reboots.
+$hadoop_tmp_dir = "${hadoop_home}/tmp"
+
+$java_home = "/usr/lib/jvm/java-7-openjdk-amd64"
+
+$user = "vagrant"
+$group = "vagrant"
+
+$hadoop_fully_distributed_mode = false
+
+# Master machine.
 $hadoop_master = '10.10.0.52'
+
+# Backup machine.
+# For psuedo-distributed mode, this is unused.
 $hadoop_backup = '10.10.0.51'
+
+# Slave machines.
+# For psuedo-distributed mode, these are unused.
 $hadoop_1 = '10.10.0.53'
 $hadoop_2 = '10.10.0.54'
 $hadoop_3 = '10.10.0.55'
 
-include hadoop
-include mahout
+# Number of replications specified in hdfs-site.xml.
+# Should be 1 for each slave.
+# For psuedo-distributed mode, this is set to 1 automatically.
+$hadoop_replications = 3
 
-file { 
+include hadoop
+# include mahout
+
+file {
 	   "/home/${user}":
         ensure => "directory",
         owner  => "${user}",
@@ -25,7 +50,7 @@ group { "${group}":
   ensure => "present",
 }
 
-user { 
+user {
 		"${user}":
         ensure => "present",
         home => "/home/${user}",
@@ -34,19 +59,19 @@ user {
         managehome => true,
 		gid => $group
 }
-	
+
 
 
 exec { 'apt-get update':
     command => '/usr/bin/apt-get update',
 }
 
-package { "openjdk-6-jdk" :
+package { "openjdk-7-jdk" :
    ensure => present,
   require => [ Exec['apt-get update'], File["/home/${user}"] ]
 }
 
-file { 
+file {
 	"/home/${user}/.ssh":
     ensure => "directory",
     owner  => "${user}",
@@ -64,7 +89,7 @@ file {
   group => $user,
   require => File["/home/${user}/.ssh"]
  }
- 
+
 file {
   "/home/${user}/.ssh/id_rsa.pub":
   source => "puppet:///modules/hadoop/id_rsa.pub",
@@ -83,7 +108,7 @@ ssh_authorized_key { "ssh_key":
     require => File["/home/${user}/.ssh/id_rsa.pub"]
 }
 
-file{
+file {
   "/home/${user}/.ssh/config":
   owner => "${user}",
   group => "${group}",
